@@ -12,7 +12,7 @@ def hello_world():
 
 @app.route('/account/')
 def account_get():
-    """Get the Recurly account by account_id"""
+    """Gets a Recurly account by account_id"""
     account_id = ''
     account_id = session['account_id']
     try:
@@ -25,9 +25,7 @@ def account_get():
 
 @app.route('/accounts')
 def accounts_search():
-    """Get an account's Recurly ID based on the provided 'account_code' (from email) """
-    """Store the ID in the session"""
-    """Redirect to /account """
+    """Gets an account's Recurly ID based on the provided 'account_code' """
     recurly_email = request.args.get('email')
     recurly_code = request.args.get('code')
     account_list = []
@@ -38,14 +36,16 @@ def accounts_search():
     for account in account_list:
         if recurly_code == account['account_code']:
             # print("Got account %s" % account['account_id'])
+            # Store the ID in the session
             session['account_id'] = account['account_id']
+            # Redirect to /account
             return redirect(url_for('account_get'))
             break
     else:
-        """Render an failed lookup template with some direction on what to do next"""
+        # Render an failed lookup template with some direction on what to do next
         return json.dumps(account_list)
 
 # TODO Add the route for updating the billing info
 # @app.route('/account_update_billing')
-# """Update an account's billing info with a Recurly.js token"""
+# """Updates account's billing info"""
 
