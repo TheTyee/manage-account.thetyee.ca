@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js">
+<!--<![endif]-->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Update your account information | The Tyee</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+    <script src="https://js.recurly.com/v4/recurly.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <link href="https://js.recurly.com/v4/recurly.css" rel="stylesheet" type="text/css">
+</head>
+
+<body style="padding:40px;width:600px">
+    <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+    <form id="my-form" action="/account_update_billing" method="post">
+        <label for="first_name">First Name</label>
+        <br />
+        <input type="text" name="first_name" data-recurly="first_name" value="{{ account.first_name }}" disabled>
+        <br />
+        <label for="last_name">Last Name</label>
+        <br />
+        <input type="text" name="last_name" data-recurly="last_name" value="{{ account.last_name}}" disabled>
+        <br />
+        Expired card on file (last four digits): {{ account.billing_info.payment_method.last_four }}
+
+        <h2>Please provide your new credit card information:</h2>
+        <div id="recurly-elements">
+            <!-- Recurly Elements will be attached here -->
+        </div>
+
+        <br />
+        <label for="postal">Postal Code</label>
+        <br />
+        <input type="text" name="postal" data-recurly="postal_code"
+            value="{{ account.billing_info.address.postal_code }}">
+
+        <!-- Recurly.js will update this field automatically -->
+        <input type="hidden" name="recurly-token" data-recurly="token">
+
+        <br />
+        <br />
+        <br />
+        <button>submit</button>
+    </form>
+    <script>
+        recurly.configure('ewr1-eV73pTTUNJwtHc5zuCXLdM');
+        const elements = recurly.Elements();
+        const cardElement = elements.CardElement();
+        cardElement.attach('#recurly-elements');
+
+        $('#my-form').on('submit', function (event) {
+            const form = this;
+            event.preventDefault();
+            recurly.token(elements, form, function (err, token) {
+                if (err) {
+                    // handle error using err.code and err.fields
+                    console.log(err);
+                } else {
+                    // recurly.js has filled in the 'token' field, so now we can submit the
+                    // form to your server
+                    console.log(token);
+                    form.submit();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
