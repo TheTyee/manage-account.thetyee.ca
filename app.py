@@ -42,7 +42,7 @@ def accounts_search():
     account_list = []
     accounts = client.list_accounts(limit=1, email=recurly_email).items()
     for account in accounts:
-        print(account.code)
+        # print(account.code)
         account_list.append({"account_email": account.email, "account_id": account.id, "account_code": account.code})
     for account in account_list:
         if recurly_code == account['account_code']:
