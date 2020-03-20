@@ -1,0 +1,25 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}Your information was updated | The Tyee{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link href="https://js.recurly.com/v4/recurly.css" rel="stylesheet" type="text/css">
+<link href="https://static.thetyee.ca/support/v1.9.2/ui/css/styles.css?v=3" rel="stylesheet" media="screen">
+<link rel="stylesheet"
+      href="{{url_for('.static', filename='styles.css')}}">
+{% endblock %}
+
+{% block content %}
+<header>
+    <h1>The Tyee</h1>
+        <h2>Tyee Builders</h2>
+    <div class="container">
+    </div>
+ </header>
+
+ <div class="container" id="content">
+         <h1>
+            Your account was updated succesfully.
+         </h1>
+</div>
+{% endblock %}

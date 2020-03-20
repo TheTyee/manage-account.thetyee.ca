@@ -1,79 +1,78 @@
-<!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!-->
-<html class="no-js">
-<!--<![endif]-->
+{% extends "bootstrap/base.html" %}
+{% block title %}Update your account information | The Tyee{% endblock %}
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Update your account information | The Tyee</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="">
-    <script src="https://js.recurly.com/v4/recurly.js"></script>
-    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
-    <link href="https://js.recurly.com/v4/recurly.css" rel="stylesheet" type="text/css">
-</head>
+{% block styles %}
+{{super()}}
+<link href="https://js.recurly.com/v4/recurly.css" rel="stylesheet" type="text/css">
+<link href="https://static.thetyee.ca/support/v1.9.2/ui/css/styles.css?v=3" rel="stylesheet" media="screen">
+<link rel="stylesheet"
+      href="{{url_for('.static', filename='styles.css')}}">
+{% endblock %}
 
-<body style="padding:40px;width:600px">
-    <!--[if lt IE 7]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
-    <form id="my-form" action="/account_update_billing" method="post">
-        <label for="first_name">First Name</label>
-        <br />
-        <input type="text" name="first_name" data-recurly="first_name" value="{{ account.first_name }}" disabled>
-        <br />
-        <label for="last_name">Last Name</label>
-        <br />
-        <input type="text" name="last_name" data-recurly="last_name" value="{{ account.last_name}}" disabled>
-        <br />
-        Expired card on file (last four digits): {{ account.billing_info.payment_method.last_four }}
+{% block scripts %}
+<script src="https://js.recurly.com/v4/recurly.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<script>
+    recurly.configure('ewr1-eV73pTTUNJwtHc5zuCXLdM');
+    const elements = recurly.Elements();
+    const cardElement = elements.CardElement();
+    cardElement.attach('#recurly-elements');
 
-        <h2>Please provide your new credit card information:</h2>
-        <div id="recurly-elements">
-            <!-- Recurly Elements will be attached here -->
-        </div>
+    $('#my-form').on('submit', function (event) {
+        const form = this;
+        event.preventDefault();
+        recurly.token(elements, form, function (err, token) {
+            if (err) {
+                // TODO Show the error to the user
+                // TODO Log the error for investigation
+                // handle error using err.code and err.fields
+                console.log(err);
+            } else {
+                // recurly.js has filled in the 'token' field, so now we can submit the
+                // form to your server
+                // console.log(token);
+                form.submit();
+            }
+        });
+    });
+</script>
+{{super()}}
+{% endblock %}
 
-        <br />
-        <label for="postal">Postal Code</label>
-        <br />
+
+{% block content %}
+<header>
+    <h1>The Tyee</h1>
+        <h2>Tyee Builders</h2>
+    <div class="container">
+    </div>
+ </header>
+
+ <div class="container" id="content">
+  <h1>Hello, {{ account.first_name }} {{ account.last_name}}</h1>
+  <p>Thanks for being a supporter of The Tyee!</p>
+  <p> The last four digits of the expired card we have on file for you are <b>{{ account.billing_info.payment_method.last_four }}</b>.
+      Please provide your updated credit card information below:
+</p>
+  <form id="my-form" action="/account_update_billing" method="post">
+    <input type="hidden" name="first_name" data-recurly="first_name" value="{{ account.first_name }}" disabled>
+    <input type="hidden" name="last_name" data-recurly="last_name" value="{{ account.last_name}}" disabled>
+
+    <div id="recurly-elements">
+        <!-- Recurly Elements will be attached here -->
+    </div>
+
+    <br />
+    <div class="form-group">
+        <label for="postal">Postal Code</label><br />
         <input type="text" name="postal" data-recurly="postal_code"
             value="{{ account.billing_info.address.postal_code }}">
+    </div>
 
-        <!-- Recurly.js will update this field automatically -->
-        <input type="hidden" name="recurly-token" data-recurly="token">
+    <!-- Recurly.js will update this field automatically -->
+    <input type="hidden" name="recurly-token" data-recurly="token">
 
-        <br />
-        <br />
-        <br />
-        <button>submit</button>
-    </form>
-    <script>
-        recurly.configure('ewr1-eV73pTTUNJwtHc5zuCXLdM');
-        const elements = recurly.Elements();
-        const cardElement = elements.CardElement();
-        cardElement.attach('#recurly-elements');
-
-        $('#my-form').on('submit', function (event) {
-            const form = this;
-            event.preventDefault();
-            recurly.token(elements, form, function (err, token) {
-                if (err) {
-                    // handle error using err.code and err.fields
-                    console.log(err);
-                } else {
-                    // recurly.js has filled in the 'token' field, so now we can submit the
-                    // form to your server
-                    console.log(token);
-                    form.submit();
-                }
-            });
-        });
-    </script>
-</body>
-
-</html>
+    <button type="submit" class="btn btn-default">Submit</button>
+</form>
+</div>
+{% endblock %}
