@@ -70,11 +70,11 @@ def accounts_search():
             # Redirect to /account
             return redirect(url_for('account_get'))
     except recurly.errors.NotFoundError as e:
-        app.logger.error('No records found.')
+        app.logger.error('accounts_search: not found error.')
         error = 'No records found.'
         return render_template('error.html', error=error) 
     except recurly.NetworkError as e:
-        app.logger.error('Encountered a network error.')
+        app.logger.error('accounts_search: network error.')
         error = "We had a what appears to be temporary problem finding your records. Please try again later."
         return render_template('error.html', error=error) 
     # Catch-all if there's nothing above
@@ -95,11 +95,11 @@ def account_get():
         app.logger.info('Showing the billing update form.')
         return render_template('account_update.html', account=account)
     except recurly.errors.NotFoundError as e:
-        app.logger.error('No records found')
+        app.logger.error('account_get: not found error')
         error = "We couldn't find your account information."
         return render_template('error.html', error=error) 
     except recurly.NetworkError as e:
-        app.logger.error('Encountered a network error')
+        app.logger.error('account_get: network error')
         error = "We had a what appears to be temporary problem finding your records. Please try again later."
         return render_template('error.html', error=error) 
 
@@ -115,14 +115,15 @@ def account_update_billing():
         app.logger.info('Successfull updated billing info.')
         return render_template('account_update_success.html', billing=billing)
     except crecurly.errors.TransactionError as e:
-        app.logger.error("Problem updating subscriber billing info: %s" % billing )
+        app.logger.error("account_update_billing: transaction error for %s" % billing )
         error = 'We had a problem completing the transaction.'
         return render_template('error.html', error=error) 
     except recurly.errors.NotFoundError as e:
-        app.logger.error('No records found')
+        app.logger.error('account_update_billing: not found error')
         error = 'We had a problem locating your record.'
         return render_template('error.html', error=error) 
     except recurly.NetworkError as e:
+        app.logger.error('account_update_billing: network error')
         error = "We had a what appears to be temporary problem finding your records. Please try again later."
         return render_template('error.html', error=error) 
 
