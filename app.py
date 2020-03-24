@@ -74,7 +74,7 @@ def accounts_search():
         error = 'No records found.'
         return render_template('error.html', error=error) 
     except recurly.NetworkError as e:
-        app.logger.error('accounts_search: network error.')
+        app.logger.error("account_search: network error %s" %e )
         error = "We had a what appears to be temporary problem finding your records. Please try again later."
         return render_template('error.html', error=error) 
     # Catch-all if there's nothing above
@@ -99,7 +99,7 @@ def account_get():
         error = "We couldn't find your account information."
         return render_template('error.html', error=error) 
     except recurly.NetworkError as e:
-        app.logger.error('account_get: network error')
+        app.logger.error("account_get: network error %s" %e )
         error = "We had a what appears to be temporary problem finding your records. Please try again later."
         return render_template('error.html', error=error) 
 
@@ -123,7 +123,7 @@ def account_update_billing():
         error = 'We had a problem locating your record.'
         return render_template('error.html', error=error) 
     except recurly.NetworkError as e:
-        app.logger.error('account_update_billing: network error')
+        app.logger.error("account_update_billing: network error %s" %e )
         error = "We had a what appears to be temporary problem finding your records. Please try again later."
         return render_template('error.html', error=error) 
 
