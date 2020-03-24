@@ -1,22 +1,27 @@
-<!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>An error has been encountered | The Tyee</title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="">
-    </head>
-    <body>
-        <h1>Error: This messsage will be more helpful before we go live</h1>
-        <!--[if lt IE 7]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
-        
-        <script src="" async defer></script>
-    </body>
-</html>
+{% extends "bootstrap/base.html" %}
+{% block title %}Your information was updated | The Tyee{% endblock %}
+
+{% block styles %}
+{{super()}}
+<link href="https://js.recurly.com/v4/recurly.css" rel="stylesheet" type="text/css">
+<link href="https://static.thetyee.ca/support/v1.9.2/ui/css/styles.css?v=3" rel="stylesheet" media="screen">
+<link rel="stylesheet"
+      href="{{url_for('.static', filename='styles.css')}}">
+{% endblock %}
+
+{% block content %}
+<header>
+    <h1>The Tyee</h1>
+        <h2>Tyee Builders</h2>
+    <div class="container">
+    </div>
+ </header>
+
+ <div class="container" id="content">
+    <h1>Yikes, we've hit a problem!</h1>
+    <p>
+       <strong> {{ error }} </strong>
+    </p>
+    <p>Please take a moment to let us know what happened by emailing <a href="mailto:ecooper@thetyee.ca">ecooper@thetyee.ca</a></p>
+</div>
+{% endblock %}
