@@ -74,12 +74,12 @@ def accounts_search():
         app.logger.error('accounts_search: not found error.')
         error = 'No records found.'
         return render_template('error.html', error=error) 
-    except recurly.NetworkError as e:
-        app.logger.error("account_search: network error %s" %e )
-        tb = traceback.format_exc()
-        app.logger.error("Stack trace: " %tb )
-        error = "We had a what appears to be temporary problem finding your records. Please try again later."
-        return render_template('error.html', error=error) 
+    # except recurly.NetworkError as e:
+    #     app.logger.error("account_search: network error %s" %e )
+    #     tb = traceback.format_exc()
+    #     app.logger.error("Stack trace: " %tb )
+    #     error = "We had a what appears to be temporary problem finding your records. Please try again later."
+    #     return render_template('error.html', error=error) 
     # Catch-all if there's nothing above
     error = 'No records found.'
     return render_template('error.html', error=error) 
@@ -101,12 +101,12 @@ def account_get():
         app.logger.error('account_get: not found error')
         error = "We couldn't find your account information."
         return render_template('error.html', error=error) 
-    except recurly.NetworkError as e:
-        app.logger.error("account_get: network error %s" %e )
-        tb = traceback.format_exc()
-        app.logger.error("Stack trace: " %tb )
-        error = "We had a what appears to be temporary problem finding your records. Please try again later."
-        return render_template('error.html', error=error) 
+    # except recurly.NetworkError as e:
+    #     app.logger.error("account_get: network error %s" %e )
+    #     tb = traceback.format_exc()
+    #     app.logger.error("Stack trace: " %tb )
+    #     error = "We had a what appears to be temporary problem finding your records. Please try again later."
+    #     return render_template('error.html', error=error) 
 
 @app.route('/account_update_billing', methods=["POST"])
 def account_update_billing():
@@ -127,12 +127,12 @@ def account_update_billing():
         app.logger.error('account_update_billing: not found error')
         error = 'We had a problem locating your record.'
         return render_template('error.html', error=error) 
-    except recurly.NetworkError as e:
-        app.logger.error("account_update_billing: network error %s" %e )
-        tb = traceback.format_exc()
-        app.logger.error("Stack trace: " %tb )
-        error = "We had a what appears to be temporary problem finding your records. Please try again later."
-        return render_template('error.html', error=error) 
+    # except recurly.NetworkError as e:
+    #     app.logger.error("account_update_billing: network error %s" %e )
+    #     tb = traceback.format_exc()
+    #     app.logger.error("Stack trace: " %tb )
+    #     error = "We had a what appears to be temporary problem finding your records. Please try again later."
+    #     return render_template('error.html', error=error) 
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
