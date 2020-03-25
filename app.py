@@ -1,3 +1,4 @@
+import traceback
 import logging
 from flask import Flask, render_template, session, redirect, url_for, json, request
 import recurly
@@ -75,6 +76,8 @@ def accounts_search():
         return render_template('error.html', error=error) 
     except recurly.NetworkError as e:
         app.logger.error("account_search: network error %s" %e )
+        tb = traceback.format_exc()
+        app.logger.error("Stack trace: " %tb )
         error = "We had a what appears to be temporary problem finding your records. Please try again later."
         return render_template('error.html', error=error) 
     # Catch-all if there's nothing above
@@ -100,6 +103,8 @@ def account_get():
         return render_template('error.html', error=error) 
     except recurly.NetworkError as e:
         app.logger.error("account_get: network error %s" %e )
+        tb = traceback.format_exc()
+        app.logger.error("Stack trace: " %tb )
         error = "We had a what appears to be temporary problem finding your records. Please try again later."
         return render_template('error.html', error=error) 
 
@@ -124,6 +129,8 @@ def account_update_billing():
         return render_template('error.html', error=error) 
     except recurly.NetworkError as e:
         app.logger.error("account_update_billing: network error %s" %e )
+        tb = traceback.format_exc()
+        app.logger.error("Stack trace: " %tb )
         error = "We had a what appears to be temporary problem finding your records. Please try again later."
         return render_template('error.html', error=error) 
 
