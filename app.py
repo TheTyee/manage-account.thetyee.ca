@@ -53,6 +53,7 @@ def hello_world():
 @app.route('/accounts')
 def accounts_search():
     """Gets an account's Recurly ID based on the provided 'account_code' """
+    client = recurly.Client(os.environ['RECURLY_KEY'])
     recurly_email = request.args.get('email')
     recurly_code = request.args.get('code')
     account_list = []
