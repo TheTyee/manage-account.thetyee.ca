@@ -1,8 +1,5 @@
-import configparser
+import os
 import recurly
 
-config = configparser.ConfigParser()
-config.read('settings.cfg')
-
 def post_fork(server, worker):
-    client = recurly.Client(config.get('RECURLY_KEY'))
+    client = recurly.Client(os.environ['RECURLY_KEY'])

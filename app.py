@@ -1,3 +1,4 @@
+import os
 import traceback
 import logging
 from flask import Flask, render_template, session, redirect, url_for, json, request
@@ -40,12 +41,10 @@ if __name__ != '__main__':
     gunicorn_logger = logging.getLogger('gunicorn.error')
     app.logger.handlers = gunicorn_logger.handlers
     app.logger.setLevel(gunicorn_logger.level)
-    def post_fork(server, worker):
-        #log.debug("gunicorn - post_fork")
-        client = recurly.Client(app.config['RECURLY_KEY']
 
 app.config.from_pyfile('settings.cfg')
-client = recurly.Client(app.config['RECURLY_KEY'])
+#client = recurly.Client(app.config['RECURLY_KEY'])
+client = recurly.Client(os.environ['RECURLY_KEY'])
 
 @app.route('/')
 def hello_world():
