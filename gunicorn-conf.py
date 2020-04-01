@@ -1,5 +1,8 @@
+import ConfigParser
 import recurly
 
+config = ConfigParser.ConfigParser()
+config.read('settings.cfg')
+
 def post_fork(server, worker):
-    #log.debug("gunicorn - post_fork")
-    client = recurly.Client(app.config['RECURLY_KEY'])
+    client = recurly.Client(config.get('Section1', 'foo', 0))
