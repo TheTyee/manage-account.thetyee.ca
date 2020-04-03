@@ -37,14 +37,14 @@ app = Flask(__name__)
 # Flast Bootstrap extension
 Bootstrap(app)
 
-if __name__ != '__main__':
-    gunicorn_logger = logging.getLogger('gunicorn.error')
-    app.logger.handlers = gunicorn_logger.handlers
-    app.logger.setLevel(gunicorn_logger.level)
+# if __name__ != '__main__':
+#     gunicorn_logger = logging.getLogger('gunicorn.error')
+#     app.logger.handlers = gunicorn_logger.handlers
+#     app.logger.setLevel(gunicorn_logger.level)
 
 app.config.from_pyfile('settings.cfg')
 #client = recurly.Client(app.config['RECURLY_KEY'])
-client = recurly.Client(os.environ['RECURLY_KEY'])
+#client = recurly.Client(os.environ['RECURLY_KEY'])
 
 @app.route('/')
 def hello_world():
@@ -91,6 +91,7 @@ def accounts_search():
 @app.route('/account/')
 def account_get():
     """Gets a Recurly account by account_id"""
+    client = recurly.Client(os.environ['RECURLY_KEY'])
     account_id = ''
     if 'account_id' in session:
         account_id = session.get('account_id')
@@ -116,6 +117,7 @@ def account_get():
 @app.route('/account_update_billing', methods=["POST"])
 def account_update_billing():
     """Updates account's billing info"""
+    client = recurly.Client(os.environ['RECURLY_KEY'])
     account_id = session.get('account_id')
     token = request.form['recurly-token']
     app.logger.info('Received a billing update form submission.')
@@ -124,9 +126,9 @@ def account_update_billing():
         billing = client.update_billing_info(account_id, billing_update)
         app.logger.info('Successfull updated billing info.')
         return render_template('account_update_success.html', billing=billing)
-    except crecurly.errors.TransactionError as e:
-        app.logger.error("account_update_billing: transaction error for %s" % billing )
-        error = 'We had a problem completing the transaction.'
+    except recurly.errors.TransactionError as e:
+        app.logger.error("account_update_billing: transaction error for %s" % e )
+        error = "We had a problem completing the transaction: %s" % e
         return render_template('error.html', error=error) 
     except recurly.errors.NotFoundError as e:
         app.logger.error('account_update_billing: not found error')
