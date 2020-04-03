@@ -3,3 +3,4 @@ __pycache__
 *.log
 .notes
 settings.ini
+.DS_Store
