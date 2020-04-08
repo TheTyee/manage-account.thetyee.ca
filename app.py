@@ -37,14 +37,12 @@ app = Flask(__name__)
 # Flast Bootstrap extension
 Bootstrap(app)
 
-# if __name__ != '__main__':
-#     gunicorn_logger = logging.getLogger('gunicorn.error')
-#     app.logger.handlers = gunicorn_logger.handlers
-#     app.logger.setLevel(gunicorn_logger.level)
+if __name__ != '__main__':
+    gunicorn_logger = logging.getLogger('gunicorn.error')
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
 
 app.config.from_pyfile('settings.cfg')
-#client = recurly.Client(app.config['RECURLY_KEY'])
-#client = recurly.Client(os.environ['RECURLY_KEY'])
 
 @app.route('/')
 def hello_world():
@@ -60,7 +58,6 @@ def accounts_search():
     try: 
         accounts = client.list_accounts(limit=1, email=recurly_email).items()
         for account in accounts:
-                # print(account.code)
                 account_list.append({"account_email": account.email, "account_id": account.id, "account_code": account.code})
         for account in account_list:
             if recurly_code == account['account_code']:
@@ -79,9 +76,6 @@ def accounts_search():
         return render_template('error.html', error=error) 
     except recurly.NetworkError as e:
         app.logger.error("account_search: network error %s" %e )
-        tb = traceback.format_exc()
-        print(tb)
-        #app.logger.error("Stack trace: " %tb )
         error = "We had a what appears to be temporary problem finding your records. Please try again later."
         return render_template('error.html', error=error) 
     # Catch-all if there's nothing above
@@ -108,9 +102,6 @@ def account_get():
         return render_template('error.html', error=error) 
     except recurly.NetworkError as e:
         app.logger.error("account_get: network error %s" %e )
-        tb = traceback.format_exc()
-        print(tb)
-        #app.logger.error("Stack trace: " %tb )
         error = "We had a what appears to be temporary problem finding your records. Please try again later."
         return render_template('error.html', error=error) 
 
@@ -136,9 +127,6 @@ def account_update_billing():
         return render_template('error.html', error=error) 
     except recurly.NetworkError as e:
         app.logger.error("account_update_billing: network error %s" %e )
-        tb = traceback.format_exc()
-        #app.logger.error("Stack trace: " %tb )
-        print(tb)
         error = "We had a what appears to be temporary problem finding your records. Please try again later."
         return render_template('error.html', error=error) 
 
