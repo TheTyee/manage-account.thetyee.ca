@@ -71,8 +71,16 @@
     <br />
     <div class="form-group">
         <label for="postal">Postal Code</label><br />
+        {% if account.billing_info %}
+        {# if for some reason there's no billing info, let's not throw an error #}
+          {% if account.billing_info.payment_method.object == 'credit_card' %}
         <input type="text" name="postal" data-recurly="postal_code"
             value="{{ account.billing_info.address.postal_code }}">
+            {%else %}
+        <input type="text" name="postal" data-recurly="postal_code"
+            value="">
+          {% endif %}
+        {% endif %}
     </div>
 
     <!-- Recurly.js will update this field automatically -->
