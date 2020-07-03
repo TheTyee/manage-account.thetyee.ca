@@ -73,12 +73,11 @@
         <label for="postal">Postal Code</label><br />
         {% if account.billing_info %}
         {# if for some reason there's no billing info, let's not throw an error #}
-            {{ account.billing_info }}
           {% if account.billing_info.payment_method.object == 'credit_card' %}
           {# check that it's a credit card not Paypal #}
             <input type="text" name="postal" data-recurly="postal_code"
             value="{{ account.billing_info.address.postal_code }}">
-            {% elif account.billing_info.payment_method.object == 'paypal' %}
+            {% elif account.billing_info.payment_method.object == 'paypal_billing_agreement' %}
             <input type="text" name="postal" data-recurly="postal_code" value="">
           {% endif %}
           {% else %}
