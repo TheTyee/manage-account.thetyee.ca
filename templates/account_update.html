@@ -51,7 +51,13 @@
  <div class="container" id="content">
   <h1>Hello, {{ account.first_name }} {{ account.last_name}}</h1>
   <p>Thanks for being a supporter of The Tyee!</p>
-  <p> The last four digits of the expired card we have on file for you are <b>{{ account.billing_info.payment_method.last_four }}</b>.
+  {% if account.billing_info %}
+  {# if for some reason there's no billing info, let's not throw an error #}
+    {% if account.billing_info.payment_method.object == 'credit_card' %}
+    {# check that it's a credit card not Paypal #}
+        <p> The last four digits of the expired card we have on file for you are <b>{{ account.billing_info.payment_method.last_four }}</b>.
+    {% endif %}
+  {% endif %}
       Please provide your updated credit card information below:
 </p>
   <form id="my-form" action="/account_update_billing" method="post">
