@@ -6,43 +6,23 @@ import recurly
 from pprint import pprint
 from flask_bootstrap import Bootstrap
 
-from logging.config import dictConfig
-dictConfig({
-    'version': 1,
-    'formatters': {'default': {
-        'format': '[%(asctime)s] %(levelname)s in %(module)s: %(message)s',
-    }},
-    'handlers': 
-        {'wsgi': {
-            'class': 'logging.StreamHandler',
-            'stream': 'ext://flask.logging.wsgi_errors_stream',
-            'formatter': 'default',
-            'level': 'DEBUG'
-        },
-        'file': { 
-            'class': 'logging.FileHandler',
-            'level': 'ERROR',
-            'formatter': 'default',
-            'filename': 'errors.log'
-        }
-    },
-    'root': {
-        'level': 'INFO',
-        'handlers': ['wsgi', 'file']
-    }
-})
+import logging
+from logdna import LogDNAHandler
 
 app = Flask(__name__)
+app.config.from_pyfile('settings.cfg')
 
-# Flast Bootstrap extension
+# Flask Bootstrap extension
 Bootstrap(app)
 
-if __name__ != '__main__':
-    gunicorn_logger = logging.getLogger('gunicorn.error')
-    app.logger.handlers = gunicorn_logger.handlers
-    app.logger.setLevel(gunicorn_logger.level)
-
-app.config.from_pyfile('settings.cfg')
+# Set-up LogDNA for logging
+logdnakey = os.environ['LOGDNA_KEY']
+logger = logging.getLogger('logdna')
+logger.setLevel(logging.INFO)
+options = {}
+logdna = LogDNAHandler(logdnakey, options)
+root = logging.getLogger()
+root.addHandler(logdna)
 
 @app.route('/')
 def hello_world():
@@ -115,7 +95,7 @@ def account_update_billing():
     try:
         billing_update = {"token_id": token}
         billing = client.update_billing_info(account_id, billing_update)
-        app.logger.info('Successfull updated billing info.')
+        app.logger.info('Successfully updated billing info.')
         return render_template('account_update_success.html', billing=billing)
     except recurly.errors.TransactionError as e:
         app.logger.error("account_update_billing: transaction error for %s" % e )
@@ -130,5 +110,20 @@ def account_update_billing():
         error = "We had a what appears to be temporary problem finding your records. Please try again later."
         return render_template('error.html', error=error) 
 
+@app.route("/status", methods=["GET"])
+def health_check():
+    app.logger.debug("debug log from /status")
+    app.logger.info("info log from /status")
+    app.logger.warning("warning log from /status")
+    app.logger.error("error log from /status")
+    app.logger.exception("exception log from /status")
+    app.logger.critical("critical log from /status")
+    
+    # return make_response("OK", 200)
+    return render_template('error.html'), 201
+
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, debug=True)
+    # gunicorn_logger = logging.getLogger('gunicorn.error')
+    # app.logger.handlers = gunicorn_logger.handlers
+    # app.logger.setLevel(gunicorn_logger.level)
