@@ -52,11 +52,11 @@ def accounts_search():
             # Redirect to /account
             return redirect(url_for('account_get'))
     except recurly.errors.NotFoundError as e:
-        app.logger.error('accounts_search: not found error.')
+        app.logger.error("accounts_search: not found error for %s" % recurly_email)
         error = 'No records found.'
         return render_template('error.html', error=error) 
     except recurly.NetworkError as e:
-        app.logger.error("account_search: network error %s" %e )
+        app.logger.error("account_search: network error for %s which was %s" %(recurly_email, e) )
         error = "We had a what appears to be temporary problem finding your records. Please try again later."
         return render_template('error.html', error=error) 
     # Catch-all if there's nothing above
@@ -75,14 +75,14 @@ def account_get():
         return render_template('error.html', error=error) 
     try:
         account = client.get_account(account_id)
-        app.logger.info('Showing the billing update form.')
+        app.logger.info('Showing the billing update form to %s.' % account.email )
         return render_template('account_update.html', account=account)
     except recurly.errors.NotFoundError as e:
         app.logger.error('account_get: not found error')
         error = "We couldn't find your account information."
         return render_template('error.html', error=error) 
     except recurly.NetworkError as e:
-        app.logger.error("account_get: network error %s" %e )
+        app.logger.error("account_get: network error for %s which was %s" %(account.email, e) )
         error = "We had a what appears to be temporary problem finding your records. Please try again later."
         return render_template('error.html', error=error) 
 
@@ -92,22 +92,23 @@ def account_update_billing():
     client = recurly.Client(os.environ['RECURLY_KEY'])
     account_id = session.get('account_id')
     token = request.form['recurly-token']
-    app.logger.info('Received a billing update form submission.')
+    account = client.get_account(account_id)
+    app.logger.info('Received a billing update form submission from %s' % account.email )
     try:
         billing_update = {"token_id": token}
         billing = client.update_billing_info(account_id, billing_update)
         app.logger.info('Successfully updated billing info.')
         return render_template('account_update_success.html', billing=billing)
     except recurly.errors.TransactionError as e:
-        app.logger.error("account_update_billing: transaction error for %s" % e )
+        app.logger.error("account_update_billing: transaction error for %s which was %s" %(account.email, e) )
         error = "We had a problem completing the transaction: %s" % e
         return render_template('error.html', error=error) 
     except recurly.errors.NotFoundError as e:
-        app.logger.error('account_update_billing: not found error')
+        app.logger.error('account_update_billing: not found error for %s' % account.email )
         error = 'We had a problem locating your record.'
         return render_template('error.html', error=error) 
     except recurly.NetworkError as e:
-        app.logger.error("account_update_billing: network error %s" %e )
+        app.logger.error("account_update_billing: network error for %s which was %s" %(account.email, e) )
         error = "We had a what appears to be temporary problem finding your records. Please try again later."
         return render_template('error.html', error=error) 
 
