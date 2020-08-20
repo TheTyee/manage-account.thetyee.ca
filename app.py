@@ -18,7 +18,8 @@ Bootstrap(app)
 # Set-up LogDNA for logging
 logdnakey = os.environ['LOGDNA_KEY']
 logger = logging.getLogger('logdna')
-logger.setLevel(logging.INFO)
+# Disabled the level so that we can have more verbose logging send to LogDNA
+# logger.setLevel(logging.INFO)
 options = {}
 logdna = LogDNAHandler(logdnakey, options)
 root = logging.getLogger()
