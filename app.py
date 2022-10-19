@@ -41,7 +41,7 @@ def accounts_search():
         for account in accounts:
                 account_list.append({"account_email": account.email, "account_id": account.id, "account_code": account.code})
         for account in account_list:
-            if recurly_code == account['account_code']:
+            if recurly_code == account['account_code'] or recurly_email == account['account_code']:
 
                 # Log the account_id
                 app.logger.info("Got account %s" % account['account_email'])
